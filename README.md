@@ -4,3 +4,4 @@ Demo2 for 《Android编程权威指南》
 1.使用Fragment<br /> 
 <h3>Capter8 重要知识点</h3>
 1.单例模式<br />
+2.RecyclerView的使用
