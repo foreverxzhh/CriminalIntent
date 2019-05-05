@@ -31,7 +31,7 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setAdapter(mAdapter);
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private List<Crime> mCrimes;
 
@@ -40,26 +40,53 @@ public class CrimeListFragment extends Fragment {
         }
 
         @Override
-        public CrimeHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_crime, viewGroup, false);
-            return new CrimeHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View view;
+            if (getItemViewType(i) == 1) {
+                view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_crime_police, viewGroup, false);
+                RecyclerView.ViewHolder crimeHolder2 = new CrimeHolder2(view);
+                return crimeHolder2;
+            }
+            view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_crime, viewGroup, false);
+            RecyclerView.ViewHolder crimeHolder = new CrimeHolder(view);
+            return crimeHolder;
         }
 
         @Override
-        public void onBindViewHolder(CrimeHolder viewHolder, final int i) {
-            viewHolder.mTitleTextView.setText(mCrimes.get(i).getTitle());
-            viewHolder.mDateTextView.setText(mCrimes.get(i).getDate().toString());
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getActivity(), mCrimes.get(i).getTitle() + "clicked!", Toast.LENGTH_SHORT).show();
-                }
-            });
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int i) {
+            if (getItemViewType(i) == 1) {
+                ((CrimeHolder2) viewHolder).mTitleTextView.setText(mCrimes.get(i).getTitle());
+                ((CrimeHolder2) viewHolder).mDateTextView.setText(mCrimes.get(i).getDate().toString());
+                ((CrimeHolder2) viewHolder).mPoliceTextView.setText("我抱井啦！");
+                ((CrimeHolder2) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), mCrimes.get(i).getTitle() + "clicked!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                ((CrimeHolder) viewHolder).mTitleTextView.setText(mCrimes.get(i).getTitle());
+                ((CrimeHolder) viewHolder).mDateTextView.setText(mCrimes.get(i).getDate().toString());
+                ((CrimeHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), mCrimes.get(i).getTitle() + "clicked!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
 
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (mCrimes.get(position).isRequiresPolice()) {
+                return 1;
+            }
+            return 0;
         }
     }
 
@@ -71,6 +98,19 @@ public class CrimeListFragment extends Fragment {
             super(itemView);
             mTitleTextView = itemView.findViewById(R.id.crime_title);
             mDateTextView = itemView.findViewById(R.id.crime_date);
+        }
+    }
+
+    private class CrimeHolder2 extends RecyclerView.ViewHolder {
+        private TextView mTitleTextView;
+        private TextView mDateTextView;
+        private TextView mPoliceTextView;
+
+        public CrimeHolder2(View itemView) {
+            super(itemView);
+            mTitleTextView = itemView.findViewById(R.id.crime_title);
+            mDateTextView = itemView.findViewById(R.id.crime_date);
+            mPoliceTextView = itemView.findViewById(R.id.police);
         }
     }
 }
