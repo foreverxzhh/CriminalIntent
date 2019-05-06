@@ -2,10 +2,14 @@ package com.hua.criminalintent;
 
 import android.support.v4.app.Fragment;
 
+import java.util.UUID;
+
 public class CrimeActivity extends SingleFragmentActivity {
+    private static final String EXTRA_CRIME_ID = "com.hua.criminalintent.crime_id";
 
     @Override
     protected Fragment createFragment() {
-        return new CrimeFragment();
+        UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        return CrimeFragment.newInstance(crimeId);
     }
 }

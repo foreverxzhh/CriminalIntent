@@ -1,5 +1,6 @@
 package com.hua.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
+    public static final String EXTRA_CRIME_ID = "com.hua.criminalintent.crime_id";
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
 
@@ -26,10 +27,20 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
-        mAdapter = new CrimeAdapter(crimeLab.getCrimes());
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimeLab.getCrimes());
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
@@ -54,7 +65,9 @@ public class CrimeListFragment extends Fragment {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), mCrimes.get(i).getTitle() + "clicked!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), CrimeActivity.class);
+                    intent.putExtra(EXTRA_CRIME_ID, mCrimes.get(i).getId());
+                    startActivity(intent);
                 }
             });
         }
