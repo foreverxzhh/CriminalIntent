@@ -17,6 +17,7 @@ public class CrimeListFragment extends Fragment {
     public static final String EXTRA_CRIME_ID = "com.hua.criminalintent.crime_id";
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private int mChangePosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimeLab.getCrimes());
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(mChangePosition);
         }
     }
 
@@ -65,6 +66,7 @@ public class CrimeListFragment extends Fragment {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mChangePosition = i;
                     Intent intent = new Intent(getActivity(), CrimeActivity.class);
                     intent.putExtra(EXTRA_CRIME_ID, mCrimes.get(i).getId());
                     startActivity(intent);

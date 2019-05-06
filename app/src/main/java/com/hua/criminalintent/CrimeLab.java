@@ -32,6 +32,7 @@ public class CrimeLab {
         return mCrimes;
     }
 
+    //优化的话，可以以空间换时间，将UUID作为key，ArrayList的position作为value，建立一个HashMap，懒得写了。。。
     public Crime getCrime(UUID id) {
         for (Crime crime : mCrimes) {
             if (crime.getId().equals(id)) {
