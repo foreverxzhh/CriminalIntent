@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,8 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onBindViewHolder(CrimeHolder viewHolder, final int i) {
             viewHolder.mTitleTextView.setText(mCrimes.get(i).getTitle());
-            viewHolder.mDateTextView.setText(mCrimes.get(i).getDate().toString());
+            String dateFormat = DateFormat.format("EEEE, MMMM dd, yyyy", mCrimes.get(i).getDate()).toString();
+            viewHolder.mDateTextView.setText(dateFormat);
             viewHolder.mSolvedImageView.setVisibility(mCrimes.get(i).isSolved() ? View.VISIBLE : View.GONE);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
