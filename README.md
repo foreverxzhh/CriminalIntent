@@ -13,7 +13,7 @@ Demo2 for 《Android编程权威指南》
 1.使用Fragment argument，（从Activity/Fragment）向Fragment传入数据<br />
 2.从Fragment向Activity传出数据的重要步骤<br />
 startActivityForResult()<br />
-onActivityResult<br />
+onActivityResult()<br />
 getActivity().setResult()<br />
 <h3>Capter11 重要知识点</h3>
 1.使用ViewPager<br />

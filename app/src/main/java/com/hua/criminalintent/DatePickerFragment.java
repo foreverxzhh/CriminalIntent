@@ -21,8 +21,7 @@ public class DatePickerFragment extends DialogFragment {
 
     private DatePicker mDatePicker;
 
-    public static DatePickerFragment newInstance(Date date)
-    {
+    public static DatePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DATE, date);
 
@@ -38,7 +37,7 @@ public class DatePickerFragment extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_date,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_date, null);
         mDatePicker = view.findViewById(R.id.dialog_date_picker);
         mDatePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), null);
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.date_picker_title)
@@ -50,8 +49,7 @@ public class DatePickerFragment extends DialogFragment {
                         int day = mDatePicker.getDayOfMonth();
 
                         Date date = new GregorianCalendar(year, month, day).getTime();
-                        if(getTargetFragment()!= null)
-                        {
+                        if (getTargetFragment() != null) {
                             Intent intent = new Intent();
                             intent.putExtra(EXTRA_DATE, date);
 
