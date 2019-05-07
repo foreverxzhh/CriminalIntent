@@ -65,7 +65,7 @@ public class CrimeListFragment extends Fragment {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), CrimeActivity.class);
+                    Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
                     intent.putExtra(EXTRA_CRIME_ID, mCrimes.get(i).getId());
                     startActivity(intent);
                 }
