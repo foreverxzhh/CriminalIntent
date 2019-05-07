@@ -20,6 +20,7 @@ public class DatePickerFragment extends DialogFragment {
     private static final String EXTRA_DATE = "com.hua.criminalintent.date";
 
     private DatePicker mDatePicker;
+    private Date mDate;
 
     public static DatePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
@@ -32,10 +33,10 @@ public class DatePickerFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Date date = (Date) getArguments().getSerializable(ARG_DATE);
+        mDate = (Date) getArguments().getSerializable(ARG_DATE);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(mDate);
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_date, null);
         mDatePicker = view.findViewById(R.id.dialog_date_picker);
@@ -49,6 +50,9 @@ public class DatePickerFragment extends DialogFragment {
                         int day = mDatePicker.getDayOfMonth();
 
                         Date date = new GregorianCalendar(year, month, day).getTime();
+                        date.setHours(mDate.getHours());
+                        date.setMinutes(mDate.getMinutes());
+
                         if (getTargetFragment() != null) {
                             Intent intent = new Intent();
                             intent.putExtra(EXTRA_DATE, date);
