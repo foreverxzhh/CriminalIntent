@@ -26,5 +26,6 @@ getTargetFragment.onActivityResult()<br />
 <h3>Capter13 重要知识点</h3>
 1.使用ToolBar<br />
 2.使用option menu及刷新菜单显示<br />
-3.添加返回导航栏，副标题<br />
-4.使用getString接受带占位符的字符串（%1$d）<br />
+3.添加返回导航栏、副标题<br />
+4.占位符的字符串（%1$d）<br />
+5.使用quantity处理单复数字符串（注意系统语言为非英文时可能失效）<br />
