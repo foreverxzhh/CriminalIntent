@@ -37,3 +37,6 @@ getTargetFragment.onActivityResult()<br />
 1.隐式Intent（action，data，type，category）<br />
 2.ContentResolver及ContentProvider的简单使用<br />
 3.使用PackageManager检查Activity是否存在<br />
+4.ShareCompat.IntentBuilder的简单使用<br />
+5.动态申请权限<br />
+6.Contact数据库的简单查询<br />

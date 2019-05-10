@@ -11,6 +11,7 @@
     <string name="subtitle_format">%1$d crimes</string>
     <string name="crime_suspect_text">Choose Suspect</string>
     <string name="crime_report_text">Send Crime Report</string>
+    <string name="crime_call_text">Call Crime</string>
     <string name="crime_report">%1$s! The Crime was discovered on %2$s, %3$s, and %4$s</string>
     <string name="crime_report_solved">The case is solved</string>
     <string name="crime_report_unsolved">The case is not solved</string>

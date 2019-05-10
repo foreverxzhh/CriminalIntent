@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mSuspectButton;
     private Button mReportButton;
+    private Button mCallButton;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -59,6 +62,7 @@ public class CrimeFragment extends Fragment {
         mSolvedCheckBox = view.findViewById(R.id.crime_solved);
         mSuspectButton = view.findViewById(R.id.crime_suspect);
         mReportButton = view.findViewById(R.id.crime_report);
+        mCallButton = view.findViewById(R.id.crime_call);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,12 +100,19 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+                /*Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
                 intent.setType("txt/plain");
                 intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
                 //强制创建选择器
+                intent = Intent.createChooser(intent, getString(R.string.send_report));
+                startActivity(intent);*/
+                Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                        .setType("txt/plain")
+                        .setText(getCrimeReport())
+                        .setSubject(getString(R.string.crime_report_subject))
+                        .getIntent();
                 intent = Intent.createChooser(intent, getString(R.string.send_report));
                 startActivity(intent);
             }
@@ -115,6 +126,38 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
             }
         });
+        mCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor cursor = getActivity().getContentResolver()
+                        .query(ContactsContract.Contacts.CONTENT_URI,
+                                null,
+                                ContactsContract.Contacts.DISPLAY_NAME + " = ?",
+                                new String[]{mCrime.getSuspect()},
+                                null);
+                if (cursor.getCount() != 0) {
+                    cursor.moveToFirst();
+                    int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    //CommonDataKinds.Phone.CONTACT_ID 对应 Contacts._ID
+                    cursor = getActivity().getContentResolver()
+                            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                    null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                    new String[]{"" + id},
+                                    null);
+                    if (cursor.getCount() != 0) {
+                        cursor.moveToFirst();
+                        String tel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        Uri uri = Uri.parse("tel:" + tel);
+                        Intent intent = new Intent();
+                        //ACTION_DIAL只复制号码到拨号盘，ACTION_CALL直接拨打电话
+                        intent.setAction(Intent.ACTION_DIAL);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
         if (mCrime.getSuspect() != null)
             mSuspectButton.setText(mCrime.getSuspect());
         PackageManager packageManager = getActivity().getPackageManager();
@@ -124,6 +167,11 @@ public class CrimeFragment extends Fragment {
         //检查intent要启动的activity是否存在
         if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null)
             mSuspectButton.setEnabled(false);
+        if (mCrime.getSuspect() != null) {
+            mCallButton.setEnabled(true);
+        } else {
+            mCallButton.setEnabled(false);
+        }
         return view;
     }
 
@@ -145,6 +193,7 @@ public class CrimeFragment extends Fragment {
                 cursor.moveToFirst();
                 mCrime.setSuspect(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                 mSuspectButton.setText(mCrime.getSuspect());
+                mCallButton.setEnabled(true);
             }
         }
     }
