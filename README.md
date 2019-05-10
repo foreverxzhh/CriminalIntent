@@ -33,3 +33,7 @@ getTargetFragment.onActivityResult()<br />
 1.使用SQLite<br />
 2.使用SQLiteOpenHelper、ContentValues、CursorWrapper<br />
 3.SQL增删改查及建表语句的简单使用
+<h3>Capter15 重要知识点</h3>
+1.隐式Intent（action，data，type，category）<br />
+2.ContentResolver及ContentProvider的简单使用<br />
+3.使用PackageManager检查Activity是否存在<br />
