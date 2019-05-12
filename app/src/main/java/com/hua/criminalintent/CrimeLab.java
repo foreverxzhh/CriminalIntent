@@ -9,6 +9,7 @@ import com.hua.criminalintent.database.CrimeBaseHelper;
 import com.hua.criminalintent.database.CrimeCursorWrapper;
 import com.hua.criminalintent.database.CrimeDbSchema.CrimeTable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +37,12 @@ public class CrimeLab {
             crime.setSolved(i % 2 == 0);
             mCrimes.add(crime);
         }*/
+
+    }
+
+    public File getPhotoFile(Crime crime) {
+        File fileDir = mContext.getFilesDir();
+        return new File(fileDir, crime.getPhotoFilename());
 
     }
 

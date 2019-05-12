@@ -3,15 +3,20 @@ package com.hua.criminalintent;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +24,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -29,12 +38,16 @@ public class CrimeFragment extends Fragment {
     private static final String EXTRA_DATE = "com.hua.criminalintent.date";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO = 2;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
     private Button mSuspectButton;
     private Button mReportButton;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
+    private File mPhotoFile;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -59,6 +72,9 @@ public class CrimeFragment extends Fragment {
         mSolvedCheckBox = view.findViewById(R.id.crime_solved);
         mSuspectButton = view.findViewById(R.id.crime_suspect);
         mReportButton = view.findViewById(R.id.crime_report);
+        mPhotoButton = view.findViewById(R.id.crime_camera);
+        mPhotoView = view.findViewById(R.id.crime_photo);
+        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -77,6 +93,7 @@ public class CrimeFragment extends Fragment {
             }
         });
         updateDate();
+        updatePhotoView();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,15 +132,43 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
             }
         });
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = FileProvider.getUriForFile(getActivity(), "com.hua.criminalintent.fileprovider", mPhotoFile);
+
+                Intent captureImage = new Intent();
+                captureImage.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                List<ResolveInfo> cameraActivities = getActivity().getPackageManager()
+                        .queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
+
+                for (ResolveInfo activity : cameraActivities) {
+                    getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                }
+
+                startActivityForResult(captureImage, REQUEST_PHOTO);
+            }
+        });
+
         if (mCrime.getSuspect() != null)
             mSuspectButton.setText(mCrime.getSuspect());
+
         PackageManager packageManager = getActivity().getPackageManager();
+
         Intent pickContact = new Intent();
         pickContact.setAction(Intent.ACTION_PICK);
         pickContact.setData(ContactsContract.Contacts.CONTENT_URI);
         //检查intent要启动的activity是否存在
         if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null)
             mSuspectButton.setEnabled(false);
+
+        Intent captureImage = new Intent();
+        captureImage.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (packageManager.resolveActivity(captureImage, PackageManager.MATCH_DEFAULT_ONLY) == null)
+            mPhotoButton.setEnabled(false);
+
         return view;
     }
 
@@ -146,11 +191,23 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSuspect(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                 mSuspectButton.setText(mCrime.getSuspect());
             }
+        } else if (requestCode == REQUEST_PHOTO) {
+            Uri uri = FileProvider.getUriForFile(getActivity(), "com.hua.criminalintent.fileprovider", mPhotoFile);
+            Log.d("haha", uri.toString());
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
         }
     }
 
     private void updateDate() {
         mDateButton.setText(mCrime.getDate().toString());
+    }
+
+    private void updatePhotoView() {
+        if (mPhotoFile != null && mPhotoFile.exists()) {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
     }
 
     @Override

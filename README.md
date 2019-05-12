@@ -40,3 +40,17 @@ getTargetFragment.onActivityResult()<br />
 4.ShareCompat.IntentBuilder的简单使用<br />
 5.动态申请权限<br />
 6.Contact数据库的简单查询<br />
+<h3>Capter16 重要知识点</h3>
+1.对内部存储文件的简单操作<br />
+getDir()<br />
+getFilesDir()<br />
+getCacheDir()<br />
+fileList()<br />
+FileInputStream()<br />
+FileOutputStream()
+2.使用FileProvider<br />
+Manifest声明FileProvider和meta-data<br />
+xml描述性文件<br />
+3.功能声明<br />
+4.调用相机拍照<br />
+5.使用Bitmap<br />

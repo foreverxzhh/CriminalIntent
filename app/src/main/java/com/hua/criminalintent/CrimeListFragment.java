@@ -87,7 +87,6 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("haha", "" + (item.getItemId() == R.menu.fragment_crime_list));
         switch (item.getItemId()) {
             case R.id.new_crime:
                 Crime crime = new Crime();
