@@ -54,3 +54,4 @@ xml描述性文件<br />
 3.功能声明<br />
 4.调用相机拍照<br />
 5.使用Bitmap<br />
+6.ViewTreeObserver的简单使用
