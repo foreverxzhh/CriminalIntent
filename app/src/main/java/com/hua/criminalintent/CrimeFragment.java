@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -34,7 +35,8 @@ import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
     public static final String ARG_CRIME_ID = "crime_id";
-    private static final String DIALOG__DATE = "DialogDate";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_IMAGE = "Dialogimage";
     private static final String EXTRA_DATE = "com.hua.criminalintent.date";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
@@ -48,6 +50,7 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+    private ViewTreeObserver mViewTreeObserver;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -65,7 +68,7 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime, container, false);
         mTitleField = view.findViewById(R.id.crime_title);
         mDateButton = view.findViewById(R.id.crime_date);
@@ -93,14 +96,13 @@ public class CrimeFragment extends Fragment {
             }
         });
         updateDate();
-        updatePhotoView();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
                 dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(manager, DIALOG__DATE);
+                dialog.show(manager, DIALOG_DATE);
             }
         });
         mSolvedCheckBox.setChecked(mCrime.isSolved());
@@ -151,6 +153,21 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                CrimeImageFragment crimeImageFragment = CrimeImageFragment.newInstance(mPhotoFile);
+                crimeImageFragment.show(fragmentManager, DIALOG_IMAGE);
+            }
+        });
+        mViewTreeObserver = mPhotoView.getViewTreeObserver();
+        mViewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                updatePhotoView(mPhotoView.getMeasuredWidth(), mPhotoView.getMeasuredHeight());
+            }
+        });
 
         if (mCrime.getSuspect() != null)
             mSuspectButton.setText(mCrime.getSuspect());
@@ -195,7 +212,7 @@ public class CrimeFragment extends Fragment {
             Uri uri = FileProvider.getUriForFile(getActivity(), "com.hua.criminalintent.fileprovider", mPhotoFile);
             Log.d("haha", uri.toString());
             getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            updatePhotoView();
+            updatePhotoView(mPhotoView.getMeasuredWidth(), mPhotoView.getMeasuredHeight());
         }
     }
 
@@ -203,9 +220,9 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText(mCrime.getDate().toString());
     }
 
-    private void updatePhotoView() {
+    private void updatePhotoView(int destWidth, int destHeight) {
         if (mPhotoFile != null && mPhotoFile.exists()) {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), destWidth, destHeight);
             mPhotoView.setImageBitmap(bitmap);
         }
     }
