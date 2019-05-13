@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.hua.criminalintent.database.CrimeBaseHelper;
 import com.hua.criminalintent.database.CrimeCursorWrapper;
+import com.hua.criminalintent.database.CrimeDbSchema;
 import com.hua.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 import java.io.File;
@@ -63,6 +64,10 @@ public class CrimeLab {
         //mCrimes.add(c);
         ContentValues values = getContentValues(c);
         mDatabase.insert(CrimeTable.NAME, null, values);
+    }
+
+    public void deleteCrime(Crime c) {
+        mDatabase.delete(CrimeTable.NAME, CrimeTable.Cols.UUID + " = ?", new String[]{c.getId().toString()});
     }
 
     public void updateCrime(Crime crime) {

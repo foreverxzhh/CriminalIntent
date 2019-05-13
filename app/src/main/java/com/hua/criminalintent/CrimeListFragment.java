@@ -3,10 +3,13 @@ package com.hua.criminalintent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +31,40 @@ public class CrimeListFragment extends Fragment {
 
     public interface Callbacks {
         void onCrimeSelected(Crime crime);
+    }
+
+    private class CustomItemTouchCallback extends ItemTouchHelper.Callback {
+
+        //定义方向
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+            int flags = makeMovementFlags(dragFlags, swipeFlags);
+            return flags;
+        }
+
+        //拖拽
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        //滑动
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            if (i == ItemTouchHelper.LEFT || i == ItemTouchHelper.RIGHT) {
+                CrimeLab.get(getActivity()).deleteCrime(CrimeLab.get(getActivity()).getCrimes().get(viewHolder.getAdapterPosition()));
+                updateUI();
+                mCallbacks.onCrimeSelected(null);
+            }
+        }
+
+        //长按拖拽开关
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return super.isLongPressDragEnabled();
+        }
     }
 
     @Override
@@ -56,6 +93,8 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new CustomItemTouchCallback());
+        itemTouchHelper.attachToRecyclerView(mCrimeRecyclerView);
         return view;
     }
 

@@ -67,6 +67,10 @@ public class CrimeFragment extends Fragment {
         mCallbacks = null;
     }
 
+    public Crime getCrime() {
+        return mCrime;
+    }
+
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID, crimeId);
