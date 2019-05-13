@@ -55,3 +55,7 @@ xml描述性文件<br />
 4.调用相机拍照<br />
 5.使用Bitmap<br />
 6.ViewTreeObserver的简单使用
+<h3>Capter17 重要知识点</h3>
+1.别名资源与可选资源的使用<br />
+2.Activity与Fragment间的回调<br />
+3.使用ItemTouchHelper为RecyclerView实现滑动删除功能
