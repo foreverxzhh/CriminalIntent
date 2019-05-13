@@ -17,7 +17,6 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,15 +51,14 @@ public class CrimeFragment extends Fragment {
 
     private Callbacks mCallbacks;
 
-    public interface Callbacks
-    {
+    public interface Callbacks {
         void onCrimeUpdated(Crime crime);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks)context;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -217,7 +215,6 @@ public class CrimeFragment extends Fragment {
             }
         } else if (requestCode == REQUEST_PHOTO) {
             Uri uri = FileProvider.getUriForFile(getActivity(), "com.hua.criminalintent.fileprovider", mPhotoFile);
-            Log.d("haha", uri.toString());
             getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             updatePhotoView();
             updateCrime();
@@ -239,7 +236,6 @@ public class CrimeFragment extends Fragment {
     public void onPause() {
         super.onPause();
         CrimeLab.get(getActivity()).updateCrime(mCrime);
-        Log.d("haha", mCrime.getDate().toString());
     }
 
     private String getCrimeReport() {
@@ -265,8 +261,7 @@ public class CrimeFragment extends Fragment {
         return report;
     }
 
-    private void updateCrime()
-    {
+    private void updateCrime() {
         CrimeLab.get(getActivity()).updateCrime(mCrime);
         mCallbacks.onCrimeUpdated(mCrime);
     }

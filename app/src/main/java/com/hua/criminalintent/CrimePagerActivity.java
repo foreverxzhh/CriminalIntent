@@ -10,7 +10,7 @@ import android.os.Bundle;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks {
     public static final String EXTRA_CRIME_ID = "com.hua.criminalintent.crime_id";
     private ViewPager mViewPager;
     private List<Crime> mCrimes;

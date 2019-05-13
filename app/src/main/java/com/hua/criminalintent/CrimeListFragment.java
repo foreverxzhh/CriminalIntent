@@ -26,15 +26,14 @@ public class CrimeListFragment extends Fragment {
 
     private Callbacks mCallbacks;
 
-    public interface Callbacks
-    {
+    public interface Callbacks {
         void onCrimeSelected(Crime crime);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks)context;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override

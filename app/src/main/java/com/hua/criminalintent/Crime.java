@@ -1,5 +1,7 @@
 package com.hua.criminalintent;
 
+import android.util.Log;
+
 import java.util.UUID;
 import java.util.Date;
 
