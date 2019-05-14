@@ -59,3 +59,5 @@ xml描述性文件<br />
 1.别名资源与可选资源的使用<br />
 2.Activity与Fragment间的回调<br />
 3.使用ItemTouchHelper为RecyclerView实现滑动删除功能
+<h3>Capter18 重要知识点</h3>
+1.资源本地化<br />
