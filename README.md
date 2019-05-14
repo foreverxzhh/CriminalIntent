@@ -61,3 +61,4 @@ xml描述性文件<br />
 3.使用ItemTouchHelper为RecyclerView实现滑动删除功能
 <h3>Capter18 重要知识点</h3>
 1.资源本地化<br />
+2.日期本地化<br />
