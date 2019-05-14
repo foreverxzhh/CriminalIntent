@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -222,7 +223,8 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate() {
-        mDateButton.setText(mCrime.getDate().toString());
+        String local = DateFormat.getBestDateTimePattern(Locale.CHINA, "yyyy MM dd E hh:mm:ss");
+        mDateButton.setText(DateFormat.format(local, mCrime.getDate()).toString());
     }
 
     private void updatePhotoView() {
