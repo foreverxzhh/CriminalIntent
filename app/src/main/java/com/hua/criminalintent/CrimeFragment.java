@@ -230,6 +230,7 @@ public class CrimeFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
             mPhotoView.setImageBitmap(bitmap);
             mPhotoView.setContentDescription(getString(R.string.crime_photo_image_description));
+            mPhotoView.announceForAccessibility(getString(R.string.crime_photo_image_description));
         }
     }
 
